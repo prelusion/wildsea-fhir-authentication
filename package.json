@@ -1,0 +1,28 @@
+{
+  "name": "wildsea-fhir-authentication",
+  "version": "1.0.0",
+  "description": "Authentication system for the Wild Sea FHIR server",
+  "main": "index.ts",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "watch": "npx tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ts-node": "^10.7.0",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4",
+    "tslint": "^6.1.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prelusion/wildsea-fhir-authentication.git"
+  },
+  "author": "Delano van der Waal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prelusion/wildsea-fhir-authentication/issues"
+  },
+  "homepage": "https://github.com/prelusion/wildsea-fhir-authentication#readme"
+}
