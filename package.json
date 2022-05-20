@@ -6,7 +6,8 @@
   "scripts": {
     "start": "tsc && node dist/index.js",
     "watch": "npx tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node .\\dist\\index.js",
+    "ts-node:run": "ts-node .\\src\\index.ts"
   },
   "dependencies": {
     "ts-node": "^10.7.0",
