@@ -1,0 +1,7 @@
+Register payload
+{
+    "fhir_id": 32,
+    "email": "delano",
+    "password": "welcome01",
+    "role": "admin",
+}

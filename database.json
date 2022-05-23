@@ -1,0 +1,10 @@
+{
+  "dev": {
+    "host": "localhost",
+    "user": "admin",
+    "password" : "admin",
+    "database": "fhir-authentication",
+    "driver": "mysql",
+    "multipleStatements": true
+  }
+}
