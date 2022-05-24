@@ -5,3 +5,11 @@ Register payload
     "password": "welcome01",
     "role": "admin",
 }
+
+
+Login payload
+{
+    "email": "delano",
+    "password": "welcome01"
+}
+

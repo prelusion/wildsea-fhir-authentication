@@ -1,8 +1,11 @@
 import env from './environment'
+import 'ts-mocha';
 
 import express from 'express'
 import jwt from 'jsonwebtoken'
+
 //import bcrypt from 'bcrypt'
+
 import {User, Account} from "./Interfaces";
 import * as MySQLConnector from './database/database_connector';
 import {getAccountByEmail, registerAccount, updateTokenByFHIREmail} from "./database/account_service";
@@ -19,7 +22,7 @@ MySQLConnector.init()
 
 //Expects a type User to be given.
 app.post('/register', async (req, res) => {
-    let statusCode = 200;
+    let statusCode = 201;
     const user: User = req.body;
 
     if (user.email == null || user.password == null) return res.sendStatus(403);
@@ -56,7 +59,7 @@ app.get('/login', async (req, res) => {
     res.json({accessToken, refreshToken});
 });
 
-function generateAccessToken(user: User, time = "30m") {
+function generateAccessToken(user: User, time = "30s") {
     return jwt.sign(user, env.ACCESS_TOKEN_SECRET, {expiresIn: time});
 }
 
@@ -72,34 +75,40 @@ app.get('/logout', async (req, res) => {
 })
 
 
+app.get('/token', async (req, res) => {
+    const authHeader = req.headers['authorization']
+    console.log(authHeader)
+    const rToken = authHeader && authHeader.split(' ')[1]
+
+    console.log(rToken)
+
+    const acc: Account = await getAccountByEmail(req.body.email);
+    if (rToken !== acc[0].rToken) return res.sendStatus(403);
+
+    await jwt.verify(rToken, env.REFRESH_TOKEN_SECRET, async (err, user) => {
+
+        if (err) return res.sendStatus(403)
+        const accessToken = generateAccessToken({email: acc[0].email,
+            password: acc[0].password,
+            fhir_id: acc[0].fhir_id,
+            role: acc[0].role})
 
 
+        const result = await updateTokenByFHIREmail(acc[0].email, accessToken, rToken);
+        if (!result) return res.sendStatus(406);
 
 
+       return res.json({accessToken});
+    });
+})
 
 
-
-
-
-app.get('/user', authenticateToken, (req, res) => {
+app.get('/info', authenticateToken, (req, res) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     res.json(req.user)
 })
 
-app.get('/token', (req, res) => {
-    const refreshToken = req.body.token;
-    //Is this token valid or does it exists in the DB?
-    //If so verfiy
-
-    jwt.verify(refreshToken, env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        // const accessToken = generateAccessToken({name: user.name, password: user.password, fhir_: user.fhir_auth})
-
-        // res.json(accessToken)
-    })
-
-})
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']

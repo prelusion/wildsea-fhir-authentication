@@ -8,7 +8,6 @@ export const AccountQueries = {
   SELECT
     fhir_id, email, password, role, token, rToken
   FROM accounts;
-
   `,
 
     getAccountByFHIRID: `
