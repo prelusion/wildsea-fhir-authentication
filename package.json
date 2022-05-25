@@ -4,15 +4,18 @@
   "description": "Authentication system for the Wild Sea FHIR server",
   "main": "index.ts",
   "scripts": {
-    "devStart": "npx nodemon ./src/index.ts",
+    "devStart": "npx nodemon src/index.ts",
     "start": "tsc && node dist/index.js",
     "watch": "npx tsc --watch",
-    "run": "node .\\dist\\index.js",
-    "ts-node:run": "ts-node .\\src\\index.ts"
+    "run": "node dist/index.js",
+    "ts-node:run": "ts-node src/index.ts",
+    "test": "ts-mocha test/**/*.ts",
+    "test watch": "ts-mocha test/**/*.ts -w --watch-files '**/*.ts'"
   },
   "dependencies": {
     "db-migrate": "^0.11.13",
     "db-migrate-mysql": "^2.2.0",
+    "dotenv": "^16.0.1",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "ts-mocha": "^10.0.0",

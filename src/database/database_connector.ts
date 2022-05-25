@@ -1,5 +1,6 @@
+import dotenv from  'dotenv'
+dotenv.config();
 import { createPool, Pool} from 'mysql2';
-import DB from '../environment'
 
 let pool: Pool;
 
@@ -9,11 +10,11 @@ let pool: Pool;
 export const init = () => {
     try {
         pool = createPool({
-            connectionLimit: DB.DB_CONNECTION_LIMIT,
-            host: DB.DB_HOST,
-            user: DB.DB_USER,
-            password: DB.DB_PASSWORD,
-            database: DB.DB_DATABASE,
+            connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT),
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE
         });
 
         console.debug('MySql Adapter Pool generated successfully');

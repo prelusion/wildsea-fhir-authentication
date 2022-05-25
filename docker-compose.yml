@@ -9,13 +9,14 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: 'fhir-authentication'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'admin'
-      MYSQL_ROOT_PASSWORD: 'admin'
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
+      - ./docker/init:/docker-entrypoint-initdb.d
       - db:/var/lib/mysql
-
 volumes:
   db:
     driver: local
+
