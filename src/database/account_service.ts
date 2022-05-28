@@ -69,4 +69,15 @@ export const updateTokenByFHIREmail = async (email: string, token: string, rToke
     return account
 };
 
-function logError(error: string) { console.log( "Error logged at " + Date.now() + "\n Error: " + error )}
+export const truncateEntireAccountsTable = async () => {
+    let responseCode = 201;
+    await execute<{ affectedRows: number }>(AccountQueries.truncateEntireAccountsTable, []).catch((error) => {
+        logError(error)
+        responseCode = 409;
+    });
+
+    return responseCode
+};
+
+
+function logError(error: string) { console.log('\n\x1b[36m%s\x1b[0m', "    DB Error logged at: " + Date.now() + "\n       " + error )}

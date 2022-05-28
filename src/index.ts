@@ -25,13 +25,15 @@ app.post('/register', async (req, res) => {
 
     if (user.email == null || user.password == null) return res.sendStatus(403);
 
-    if(user.fhir_id !== null) {
-        //If fhir_id is
+    if(user.fhir_id === null && user.role === "Patient") {
+        return res.sendStatus(404);
     }
 
     await registerAccount({user, rToken:null, token: null}).then((sCode) => {
         statusCode = sCode;
     });
+
+    console.log(statusCode)
     return res.sendStatus(statusCode);
 });
 
@@ -123,3 +125,5 @@ function authenticateToken(req, res, next) {
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
+
+module.exports = app;

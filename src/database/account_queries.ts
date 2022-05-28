@@ -33,4 +33,8 @@ export const AccountQueries = {
       WHERE
         email = ?
       `,
+
+    truncateEntireAccountsTable: `
+        TRUNCATE TABLE accounts
+    `
 }
