@@ -1,67 +1,28 @@
 import assert from "assert";
-import {Account, User} from "../src/interfaces";
-
-require("./test_initializer")
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const app = require("../src/index"); // Link to your server file
-import supertest from "supertest";
+import {Account, JwtUser, User} from "../src/interface/interfaces";
+import jwt from 'jsonwebtoken'
 import {truncateEntireAccountsTable} from "../src/database/account_service";
-const request = supertest(app);
-
-
+import {login, logout, sendRegister} from "../src/test_handler";
 
 describe("Database authentication system ", function () {
-    let registerUser: User;
     let statusCode: number;
-    // before(function () {
-    //     // runs once before the first test in this block
-    // });
-    //
-    // after(function () {
-    //     // runs once after the last test in this block
-    // });
-    //
-    // beforeEach(function () {
-    //     // runs before each test in this block
-    // });
-    //
-    // afterEach(function () {
-    //     // runs after each test in this block
-    // });
-    //
-
-    before(async function () {
-        await truncateEntireAccountsTable();
-        registerUser = {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"};
-    });
-
-    beforeEach(function () {
-        //Increments the fhir_id because it's unique in the DB
-        registerUser.fhir_id = (parseInt(registerUser.fhir_id) + 1).toString();
-        statusCode = null;
-    });
-
-    async function sendRegister (user: User, expectedStatusCode: number, statusCode: number): Promise<number> {
-        await request.post("/register")
-            .send({
-                email: user.email,
-                fhir_id: user.fhir_id,
-                password: user.password,
-                role: user.role
-            }).expect(expectedStatusCode)
-            .then((res) => {
-                statusCode = res.statusCode;
-            }).catch((err) => {
-                statusCode = err.statusCode;
-            });
-        return statusCode;
-    }
-
 
     describe("Register", function () {
+        let registerUser: User;
+
+        before(async function () {
+            await truncateEntireAccountsTable();
+            registerUser = {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"};
+        });
+
+        beforeEach(function () {
+            //Increments the fhir_id because it's unique in the DB
+            registerUser.fhir_id = (parseInt(registerUser.fhir_id) + 1).toString();
+            statusCode = null;
+        });
+
         it("should return status code 201 for creating the Patient", async function () {
-            await sendRegister(registerUser, 201, statusCode).then(code => {
+            await sendRegister(registerUser, 201).then(code => {
                 statusCode = code;
             })
 
@@ -69,7 +30,7 @@ describe("Database authentication system ", function () {
         });
 
         it("should return status code 409 because the email is not unique", async function () {
-            await sendRegister(registerUser, 409, statusCode).then(code => {
+            await sendRegister(registerUser, 409).then(code => {
                 statusCode = code;
             });
 
@@ -80,7 +41,7 @@ describe("Database authentication system ", function () {
             registerUser.fhir_id = "2";
             registerUser.email = "temp@temp";
 
-            await sendRegister(registerUser, 409, statusCode).then(code => {
+            await sendRegister(registerUser, 409).then(code => {
                 statusCode = code;
             });
 
@@ -90,7 +51,7 @@ describe("Database authentication system ", function () {
         it("should return status code 403 because the email is empty", async function () {
             const tempEmail: string = registerUser.email;
             registerUser.email = null;
-            await sendRegister(registerUser, 403, statusCode).then(code => {
+            await sendRegister(registerUser, 403).then(code => {
                 statusCode = code;
             });
 
@@ -100,7 +61,7 @@ describe("Database authentication system ", function () {
 
         it("should return status code 404 if new user is a Patient with no fhir_id", async function () {
             registerUser.fhir_id = null;
-            await sendRegister(registerUser, 404, statusCode).then(code => {
+            await sendRegister(registerUser, 404).then(code => {
                 statusCode = code;
             });
 
@@ -109,36 +70,85 @@ describe("Database authentication system ", function () {
     });
 
     describe("login", function () {
+        let loginUser: Account;
+        const loggedInUserData = {
+            tokens: {token: null, rToken: null},
+            user: {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}
+        };
 
-        it("Should return correct token after correct login", function () {
-            //test
+        before(async function () {
+            await truncateEntireAccountsTable();
+            await sendRegister(loggedInUserData.user);
         });
 
-        it("Should return correct RefreshToken after correct login", function () {
-            //test
+        beforeEach(function () {
+            /* Deep copy of loggedInUserData */
+            loginUser = JSON.parse(JSON.stringify(loggedInUserData));
         });
 
-        it("should return status code 403 because the email is null", function () {
-            //test
+        it("Should return correct token after correct login", async function () {
+            const tokens = (await login(loginUser.user)).tokens;
+            const user = jwt.decode(tokens.token) as JwtUser;
+
+            assert.equal(user.email, "Delano@NoToken")
+            assert.equal(user.password, "TestCase01")
+            assert.equal(user.role, "Patient");
+        })
+
+        it("Should return correct RefreshToken after correct login", async function () {
+            const tokens = (await login(loginUser.user)).tokens;
+            const user = jwt.decode(tokens.rToken) as JwtUser;
+
+            assert.equal(user.email, "Delano@NoToken")
+            assert.equal(user.password, "TestCase01")
+            assert.equal(user.role, "Patient");
         });
 
-        it("should return status code 403 because the email is not correct", function () {
-            //test
+        it("should return status code 403 because the email is null", async function () {
+            loginUser.user.email = null;
+            const statusCode = (await login(loginUser.user)).statusCode;
+
+            assert.equal(statusCode, 403);
         });
 
-        it("should return status code 403 because the password is incorrect", function () {
-            //test
+        it("should return status code 403 because the email is not correct", async function () {
+            loginUser.user.email = "ungabunga@uchaucha";
+            const statusCode = (await login(loginUser.user)).statusCode;
+
+            assert.equal(statusCode, 403);
         });
-    })
+
+        it("should return status code 403 because the password is incorrect", async function () {
+            loginUser.user.password = "NotWelcome01";
+            const statusCode = (await login(loginUser.user)).statusCode;
+
+            assert.equal(statusCode, 403);
+        });
+    });
 
     describe("logout", function () {
-        it("should return status code 200 because the logout was successful", function () {
-            //test
+        let logoutUser: Account;
+
+        beforeEach(async function () {
+            await truncateEntireAccountsTable();
+            logoutUser = {user:{ email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}}
+            await sendRegister(logoutUser.user)
+            logoutUser.tokens = (await login(logoutUser.user)).tokens;
+            statusCode = null;
         });
 
-        it("should return status code 500 because the given email is incorrect", function () {
-            //test
+        it("should return status code 200 because the logout was successful", async function () {
+            statusCode = await logout(logoutUser.user, 200)
+            assert.equal(statusCode, 200);
         });
+
+        it("should return status code 404 because the given email is incorrect", async function () {
+            logoutUser.user.email = "incorrectEmail";
+            statusCode = await logout(logoutUser.user, 404)
+
+            assert.equal(statusCode, 404);
+        });
+
     })
 });
 

@@ -1,6 +1,6 @@
 import { execute } from "../database/database_connector";
 import { AccountQueries } from "./account_queries";
-import {Account} from "../interfaces";
+import {Account} from "../interface/interfaces";
 
 /**
  * executes register query in the MySQL DB
@@ -8,20 +8,20 @@ import {Account} from "../interfaces";
  * @param {Account} acc - provide an entire account as Param
  */
 export const registerAccount = async (acc: Account) => {
-    let responseCode = 201;
+    let statusCode = 201;
     await execute<{ affectedRows: number }>(AccountQueries.registerAccount, [
         acc.user.fhir_id,
         acc.user.email,
         acc.user.password,
         acc.user.role,
-        acc.rToken,
-        acc.token,
+        acc.tokens.rToken,
+        acc.tokens.token,
     ]).catch((error) => {
         logError(error)
-        responseCode = 409;
+        statusCode = 409;
     });
 
-    return responseCode
+    return statusCode
 };
 
 export const getAllAccounts = async (): Promise<number> => {
@@ -45,19 +45,22 @@ export const getAccountByFHIRID = async (acc: Account): Promise<Account> => {
     return account
 };
 
-export const getAccountByEmail = async (email: string): Promise<Account> => {
-    const account = await execute<{ affectedRows: number }>(AccountQueries.getAccountByFHIREmail, [
+export const getAccountByEmail = async (email: string): Promise<Account | null> => {
+    const accounts = await execute<{ affectedRows: number }>(AccountQueries.getAccountByFHIREmail, [
         email
     ]).catch((error) => {
         logError(error)
         return null
     });
-
-    return account
+    if(accounts.length === 0) {
+        return null;
+    }
+    const account = accounts[0];
+    return {tokens: {token: account.token, rToken: account.rToken}, user: {fhir_id: account.fhir_id, email: account.email, password: account.password, role: account.role}}
 };
 
-export const updateTokenByFHIREmail = async (email: string, token: string, rToken): Promise<Account> => {
-    const account = await execute<{ affectedRows: number }>(AccountQueries.updateTokenByFHIREmail, [
+export const updateTokenByFHIREmail = async(email: string, token: string, rToken): Promise<number> => {
+    const accounts = await execute<{ affectedRows: number }>(AccountQueries.updateTokenByFHIREmail, [
         token,
         rToken,
         email
@@ -66,17 +69,18 @@ export const updateTokenByFHIREmail = async (email: string, token: string, rToke
         return null
     });
 
-    return account
+    if (accounts.affectedRows === 0) return 404
+    return 200
 };
 
 export const truncateEntireAccountsTable = async () => {
-    let responseCode = 201;
+    let statusCode = 201;
     await execute<{ affectedRows: number }>(AccountQueries.truncateEntireAccountsTable, []).catch((error) => {
         logError(error)
-        responseCode = 409;
+        statusCode = 409;
     });
 
-    return responseCode
+    return statusCode
 };
 
 

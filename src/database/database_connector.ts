@@ -1,6 +1,5 @@
-// import dotenv from  'dotenv'
-// dotenv.config();
 import { createPool, Pool} from 'mysql2';
+import process from "process";
 
 let pool: Pool;
 
@@ -8,7 +7,6 @@ let pool: Pool;
  * generates pool connection to be used throughout the app
  */
 export const init = () => {
-    console.log(process.env.DB_DATABASE)
     try {
         pool = createPool({
             connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT),
@@ -17,9 +15,7 @@ export const init = () => {
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE
         });
-
-        console.log(process.env.DB_DATABASE);
-
+        console.log(`The following database is used: ${process.env.DB_DATABASE}`)
         console.debug('MySql Adapter Pool generated successfully');
     } catch (error) {
         console.error('[mysql.connector][init][Error]: ', error);
@@ -35,8 +31,8 @@ export const init = () => {
  * in the query
  */
 export const execute = <T>(query: string, params: string[] | object): Promise<T> => {
+    if (!pool) throw new Error('Pool was not created. Ensure pool is created when running the app.');
     try {
-        if (!pool) throw new Error('Pool was not created. Ensure pool is created when running the app.');
         return new Promise<T>((resolve, reject) => {
             pool.query(query, params, (error, results) => {
                 if (error) {
