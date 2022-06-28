@@ -1,8 +1,9 @@
-import express from 'express'
-import jwt from 'jsonwebtoken'
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
 //import bcrypt from 'bcrypt'
 
-import {User, Account, JwtUser} from "./interface/interfaces";
+import {User} from "./interface/interfaces";
 import * as MySQLConnector from './database/database_connector';
 import {getAccountByEmail, registerAccount, updateTokenByFHIREmail} from "./database/account_service";
 import {authenticateToken, generateAccessToken, generateRefreshToken} from "./token_handler";
@@ -13,19 +14,22 @@ const port = 3000
 
 //Lets the application use JSON
 app.use(express.json())
+app.use(cors());
 
 //Inits the mysql pools for queries to be run.
 MySQLConnector.init()
 
 
 app.post('/register', async (req, res) => {
+    console.log("register DETECTED");
+
     let statusCode = 201;
     const user: User = req.body;
 
     if (user.email == null || user.password == null)
         return res.sendStatus(403);
 
-    if (user.fhir_id === null && user.role === "Patient") {
+    if (user.fhir_id === null && user.role.toLowerCase() === "patient") {
         return res.sendStatus(404);
     }
 
@@ -36,7 +40,9 @@ app.post('/register', async (req, res) => {
     return res.sendStatus(statusCode);
 });
 
-app.get('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
+    console.log("LOGIN DETECTED");
+    
     const acc = await getAccountByEmail(req.body.email);
 
     if (!acc) {

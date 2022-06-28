@@ -5,6 +5,7 @@
     "password" : "admin",
     "database": "fhir-authentication",
     "driver": "mysql",
+    "port": "3307",
     "multipleStatements": true
   },
   "test": {
@@ -13,6 +14,7 @@
     "password" : "admin",
     "database": "fhir-authentication-test",
     "driver": "mysql",
+    "port": "3307",
     "multipleStatements": true
   }
 }
