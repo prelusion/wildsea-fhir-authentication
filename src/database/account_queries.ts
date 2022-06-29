@@ -5,10 +5,10 @@ export const AccountQueries = {
     `,
 
     getAccounts: `
-  SELECT
-    fhir_id, email, password, role, token, rToken
-  FROM accounts;
-  `,
+        SELECT
+            fhir_id, email, password, role, token, rToken
+        FROM accounts;
+    `,
 
     getAccountByFHIRID: `
         SELECT
@@ -28,9 +28,9 @@ export const AccountQueries = {
 
     updateTokenByFHIREmail: `
         UPDATE accounts
-      SET token = ?,
-          rToken = ?
-      WHERE
+        SET token = ?,
+            rToken = ?
+        WHERE
         email = ?
       `,
 

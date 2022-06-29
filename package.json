@@ -10,7 +10,8 @@
     "run": "node dist/index.js",
     "ts-node:run": "ts-node src/index.ts",
     "test": "ts-mocha test/**/*.ts",
-    "test watch": "ts-mocha test/**/*.ts -w --watch-files '**/*.ts'"
+    "test watch": "ts-mocha test/**/*.ts -w --watch-files '**/*.ts'",
+    "migrate": "db-migrate up"
   },
   "dependencies": {
     "axios": "^0.27.2",

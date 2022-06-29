@@ -10,7 +10,7 @@ import {Account} from "../interface/interfaces";
 export const registerAccount = async (acc: Account) => {
     let statusCode = 201;
     await execute<{ affectedRows: number }>(AccountQueries.registerAccount, [
-        acc.user.fhir_id,
+        acc.user.fhir_id || null,
         acc.user.email,
         acc.user.password,
         acc.user.role,
@@ -30,7 +30,7 @@ export const getAllAccounts = async (): Promise<number> => {
         logError(error)
         return null;
     });
-
+    
     return accounts
 };
 
