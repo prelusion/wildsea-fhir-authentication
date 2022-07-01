@@ -1,12 +1,26 @@
 import {User} from "./interface/interfaces";
-import jwt from 'jsonwebtoken'
+import jwt, {SignOptions} from 'jsonwebtoken'
+import fs from "fs";
 
-export function generateAccessToken(user: User, time = "30m") {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);/*{expiresIn: time}*/
+const privateKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
+const privateRKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
+
+function getSignOptions(): SignOptions {
+    return {
+        issuer: "Wild Sea",
+        expiresIn: "12h",
+        algorithm: "RS256"
+    }
+}
+
+export function generateAccessToken(user: User) {
+    console.log(privateKEY)
+    console.log(privateKEY)
+    return jwt.sign(user, privateKEY, getSignOptions());
 }
 
 export function generateRefreshToken(user: User) {
-    return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+    return jwt.sign(user, privateRKEY, getSignOptions());
 }
 
 // Middleware function for api requests
@@ -15,7 +29,7 @@ export function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) res.statusCode = 401;
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, privateKEY, getSignOptions(),(err, user) => {
         if (err) res.statusCode = 403;
 
         req.body.user = user

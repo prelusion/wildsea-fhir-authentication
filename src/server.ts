@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 //import bcrypt from 'bcrypt'
+import fs from "fs";
 
 import {User} from "./interface/interfaces";
 import * as MySQLConnector from './database/database_connector';
@@ -12,6 +13,7 @@ import {authenticateToken, generateAccessToken, generateRefreshToken} from "./to
 export const app = express()
 const port = 3000
 
+const privateRKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
 //Lets the application use JSON
 app.use(express.json())
 app.use(cors());
@@ -40,6 +42,7 @@ app.post('/register', async (req, res) => {
     return res.sendStatus(statusCode);
 });
 
+const pubKey = fs.readFileSync('./fhir_public_key', 'utf8');
 app.post('/login', async (req, res) => {
     console.log("LOGIN DETECTED");
     
@@ -70,7 +73,7 @@ app.post('/login', async (req, res) => {
         return res.json({statusCode: 500, tokens: null});
     }
 
-    return res.json({statusCode: 200, tokens: {token, rToken}});
+    return res.json({statusCode: 200, tokens: {token, rToken}, key: pubKey});
 });
 
 
@@ -91,7 +94,7 @@ app.get('/token', async (req, res) => {
         return res.json({statusCode: 403});
     }
 
-    await jwt.verify(rToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
+    await jwt.verify(rToken, privateRKEY, async (err, user) => {
 
         if (err) return res.json({statusCode: 403});
         const token = generateAccessToken({

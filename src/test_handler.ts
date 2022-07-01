@@ -3,7 +3,7 @@ import supertest from "supertest";
 import dotenv from  'dotenv'
 import path from "path";
 
-// Dotenv must be loaded before app, this way the .env.test will be read before the .env file when running tests.
+// Dotenv must be loaded before app, this way the .env.test will be read before the ..env file when running tests.
 dotenv.config({path: path.join(__dirname, "../.env.test")});
 import {app} from "./server"
 const request = supertest(app);

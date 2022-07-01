@@ -22,8 +22,8 @@ exports.up = function(db) {
       email: {type: 'string', notNull: true, unique: true},
       password: {type: 'string', notNull: true},
       role: {type: 'string', notNull: true},
-      token: {type: 'string'},
-      rToken: {type: 'string'},
+      token: {type: 'text'},
+      rToken: {type: 'text'},
     },
   });
 };

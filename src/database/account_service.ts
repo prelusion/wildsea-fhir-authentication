@@ -55,16 +55,21 @@ export const getAccountByEmail = async (email: string): Promise<Account | null> 
     if(accounts.length === 0) {
         return null;
     }
+
+
     const account = accounts[0];
     return {tokens: {token: account.token, rToken: account.rToken}, user: {fhir_id: account.fhir_id, email: account.email, password: account.password, role: account.role}}
 };
 
 export const updateTokenByFHIREmail = async(email: string, token: string, rToken): Promise<number> => {
+    console.log("token", rToken);
+
     const accounts = await execute<{ affectedRows: number }>(AccountQueries.updateTokenByFHIREmail, [
         token,
         rToken,
         email
     ]).catch((error) => {
+        console.log(error)
         logError(error)
         return null
     });
