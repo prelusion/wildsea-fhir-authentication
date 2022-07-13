@@ -1,7 +1,7 @@
 export interface User {
     fhir_id?: string;
     email: string;
-    password: string;
+    password?: string;
     role: string;
 }
 

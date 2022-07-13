@@ -14,8 +14,6 @@ function getSignOptions(): SignOptions {
 }
 
 export function generateAccessToken(user: User) {
-    console.log(privateKEY)
-    console.log(privateKEY)
     return jwt.sign(user, privateKEY, getSignOptions());
 }
 

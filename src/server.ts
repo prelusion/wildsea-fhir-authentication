@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-//import bcrypt from 'bcrypt'
 import fs from "fs";
+import bcrypt from "bcrypt";
 
 import {User} from "./interface/interfaces";
 import * as MySQLConnector from './database/database_connector';
@@ -35,6 +35,8 @@ app.post('/register', async (req, res) => {
         return res.sendStatus(404);
     }
 
+    user.password = bcrypt.hashSync(user.password, 10);
+
     await registerAccount({user, tokens: {rToken: null, token: null}}).then((sCode) => {
         statusCode = sCode;
     });
@@ -52,14 +54,13 @@ app.post('/login', async (req, res) => {
         return res.json({statusCode: 403});
     }
 
-    if (req.body.password !== acc.user.password) {
+    if (!bcrypt.compareSync(req.body.password, acc.user.password)) {
         return res.json({statusCode: 403, tokens: null});
     }
 
     //Authenticate user
     const user = {
         email: acc.user.email,
-        password: acc.user.password,
         fhir_id: acc.user.fhir_id,
         role: acc.user.role
     };
@@ -99,7 +100,6 @@ app.get('/token', async (req, res) => {
         if (err) return res.json({statusCode: 403});
         const token = generateAccessToken({
             email: acc.user.email,
-            password: acc.user.password,
             fhir_id: acc.user.fhir_id,
             role: acc.user.role
         });
