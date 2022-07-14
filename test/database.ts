@@ -91,7 +91,6 @@ describe("Database authentication system ", function () {
             const user = jwt.decode(tokens.token) as JwtUser;
 
             assert.equal(user.email, "Delano@NoToken")
-            assert.equal(user.password, "TestCase01")
             assert.equal(user.role, "Patient");
         })
 
@@ -100,7 +99,6 @@ describe("Database authentication system ", function () {
             const user = jwt.decode(tokens.rToken) as JwtUser;
 
             assert.equal(user.email, "Delano@NoToken")
-            assert.equal(user.password, "TestCase01")
             assert.equal(user.role, "Patient");
         });
 

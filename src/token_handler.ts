@@ -14,20 +14,29 @@ function getSignOptions(): SignOptions {
 }
 
 export function generateAccessToken(user: User) {
+    // Todo sign options
     return jwt.sign(user, privateKEY, getSignOptions());
+    // return jwt.sign(user, privateKEY);
 }
 
 export function generateRefreshToken(user: User) {
+    // Todo sign options
     return jwt.sign(user, privateRKEY, getSignOptions());
+    // return jwt.sign(user, privateRKEY);
 }
 
 // Middleware function for api requests
 export function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) res.statusCode = 401;
 
-    jwt.verify(token, privateKEY, getSignOptions(),(err, user) => {
+    if (token == null) res.statusCode = 401;
+    // Todo sign options
+    // jwt.verify(token, privateKEY, getSignOptions(),(err, user) => {
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    jwt.verify(token, privateKEY, {issuer: "Wild Sea", algorithm: ["RS256"]}, (err, user) => {
         if (err) res.statusCode = 403;
 
         req.body.user = user

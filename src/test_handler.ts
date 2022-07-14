@@ -27,7 +27,7 @@ export async function sendRegister(user: User, expectedStatusCode = 201): Promis
 
 export async function login(user: User): Promise<LoginResponse> {
     let loginResponse: LoginResponse;
-    await request.get("/login")
+    await request.post("/login")
         .send({
             email: user.email,
             password: user.password,
@@ -37,6 +37,7 @@ export async function login(user: User): Promise<LoginResponse> {
         }).catch((err) => {
             loginResponse = err.body;
         });
+
     return loginResponse;
 }
 
