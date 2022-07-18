@@ -284,20 +284,24 @@ describe("FHIR API", function () {
                 assert.equal(response.statusCode, 201);
             });
 
-            // it("Admin should be able to delete a patient resource", async function () {
+            // it("Admin should be able to patch a patient resource", async function () {
             //     test
                 //
                 // assert.equal(403, 403);
             // });
+
+            // it("Admin should be able to delete a patient resource", async function () {
+            //     test
+            //
+            // assert.equal(403, 403);
+            // });
+
+            // it("Admin should be able to search for a bundle", async function () {
+            //     test
+            //
+            // assert.equal(403, 403);
+            // });
         });
     });
-    //
-    // describe("Role | WildSea", function () {
-    //     describe("Resource | Patient", function () {
-    //         it("", function () {
-    //             //test
-    //         });
-    //     });
-    // });
 });
 
