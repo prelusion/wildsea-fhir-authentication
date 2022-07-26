@@ -7,6 +7,8 @@ let pool: Pool;
  * generates pool connection to be used throughout the app
  */
 export const init = () => {
+    console.log("Host: " + process.env.DB_HOST);
+    console.log("Host: " + process.env.DB_HOST);
     try {
         pool = createPool({
             connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT),

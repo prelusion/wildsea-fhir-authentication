@@ -9,6 +9,15 @@
     "multipleStatements": true
   },
   "test": {
+    "host": "mysql",
+    "user": "root",
+    "password" : "admin",
+    "database": "fhir-authentication-test",
+    "driver": "mysql",
+    "port": "3306",
+    "multipleStatements": true
+  },
+  "temp": {
     "host": "localhost",
     "user": "admin",
     "password" : "admin",
