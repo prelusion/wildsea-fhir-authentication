@@ -24,7 +24,7 @@ describe("Token", function () {
 
         it("Generating access token should return given value", function () {
             const decodedUser = jwt.decode(generatedToken) as JwtUser;
-
+            
             assert.equal(decodedUser.email, "Delano@NoToken")
             assert.equal(decodedUser.fhir_id, "1")
             assert.equal(decodedUser.role, "Patient")
@@ -47,44 +47,44 @@ describe("Token", function () {
         });
     });
 
-    describe("Generation of RefreshToken", function () {
-        let user: User;
-        let rToken: string;
+    // describe("Generation of RefreshToken", function () {
+    //     let user: User;
+    //     let rToken: string;
 
-        before(async function () {
-            await truncateEntireAccountsTable();
-            user = {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"};
-            await sendRegister(user);
-        });
+    //     before(async function () {
+    //         await truncateEntireAccountsTable();
+    //         user = {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"};
+    //         await sendRegister(user);
+    //     });
 
-        beforeEach(async function () {
-            user.email = "Delano@NoToken";
-            rToken = (await login(user)).tokens.rToken;
-        })
+    //     beforeEach(async function () {
+    //         user.email = "Delano@NoToken";
+    //         rToken = (await login(user)).tokens.rToken;
+    //     })
 
-        // it("Generating refresh token should return given value", async function () {
-        //     const loginResponse = await refreshToken(user, rToken) as LoginResponse;
-        //     console.log(loginResponse.tokens.token)
-        //     const decodedUser = jwt.decode(loginResponse.tokens.token) as JwtUser;
-        //
-        //     assert.equal(loginResponse.statusCode, 200)
-        //     assert.equal(decodedUser.email, "Delano@NoToken")
-        //     assert.equal(decodedUser.fhir_id, "1")
-        //     assert.equal(decodedUser.role, "Patient")
-        // });
+    //     // it("Generating refresh token should return given value", async function () {
+    //     //     const loginResponse = await refreshToken(user, rToken) as LoginResponse;
+    //     //     console.log(loginResponse.tokens.token)
+    //     //     const decodedUser = jwt.decode(loginResponse.tokens.token) as JwtUser;
+    //     //
+    //     //     assert.equal(loginResponse.statusCode, 200)
+    //     //     assert.equal(decodedUser.email, "Delano@NoToken")
+    //     //     assert.equal(decodedUser.fhir_id, "1")
+    //     //     assert.equal(decodedUser.role, "Patient")
+    //     // });
 
-        it("Should return status code 403 because of a wrong email", async function () {
-            user.email = "Delano@wrongemail"
-            const loginResponse = await refreshToken(user, rToken) as LoginResponse;
+    //     it("Should return status code 403 because of a wrong email", async function () {
+    //         user.email = "Delano@wrongemail"
+    //         const loginResponse = await refreshToken(user, rToken) as LoginResponse;
 
-            assert.equal(loginResponse.statusCode, 403)
-        });
+    //         assert.equal(loginResponse.statusCode, 403)
+    //     });
 
-        it("Should return status code 403 because the rToken has been manipulated", async function () {
-            rToken += "a";
-            const loginResponse = await refreshToken(user, rToken) as LoginResponse;
+    //     it("Should return status code 403 because the rToken has been manipulated", async function () {
+    //         rToken += "a";
+    //         const loginResponse = await refreshToken(user, rToken) as LoginResponse;
 
-            assert.equal(loginResponse.statusCode, 403)
-        });
-    });
+    //         assert.equal(loginResponse.statusCode, 403)
+    //     });
+    // });
 });
