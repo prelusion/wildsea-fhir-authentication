@@ -26,7 +26,7 @@ describe("Database authentication system ", function () {
                 statusCode = code;
             })
 
-            assert.equal(statusCode, 404);
+            assert.equal(statusCode, 201);
         });
 
         it("should return status code 409 because the email is not unique", async function () {
@@ -69,84 +69,84 @@ describe("Database authentication system ", function () {
         });
     });
 
-    // describe("login", function () {
-    //     let loginUser: Account;
-    //     const loggedInUserData = {
-    //         tokens: {token: null, rToken: null},
-    //         user: {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}
-    //     };
+    describe("login", function () {
+        let loginUser: Account;
+        const loggedInUserData = {
+            tokens: {token: null, rToken: null},
+            user: {email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}
+        };
 
-    //     before(async function () {
-    //         await truncateEntireAccountsTable();
-    //         await sendRegister(loggedInUserData.user);
-    //     });
+        before(async function () {
+            await truncateEntireAccountsTable();
+            await sendRegister(loggedInUserData.user);
+        });
 
-    //     beforeEach(function () {
-    //         /* Deep copy of loggedInUserData */
-    //         loginUser = JSON.parse(JSON.stringify(loggedInUserData));
-    //     });
+        beforeEach(function () {
+            /* Deep copy of loggedInUserData */
+            loginUser = JSON.parse(JSON.stringify(loggedInUserData));
+        });
 
-    //     it("Should return correct token after correct login", async function () {
-    //         const tokens = (await login(loginUser.user)).tokens;
-    //         const user = jwt.decode(tokens.token) as JwtUser;
+        it("Should return correct token after correct login", async function () {
+            const tokens = (await login(loginUser.user)).tokens;
+            const user = jwt.decode(tokens.token) as JwtUser;
 
-    //         assert.equal(user.email, "Delano@NoToken")
-    //         assert.equal(user.role, "Patient");
-    //     })
+            assert.equal(user.email, "Delano@NoToken")
+            assert.equal(user.role, "Patient");
+        })
 
-    //     it("Should return correct RefreshToken after correct login", async function () {
-    //         const tokens = (await login(loginUser.user)).tokens;
-    //         const user = jwt.decode(tokens.rToken) as JwtUser;
+        it("Should return correct RefreshToken after correct login", async function () {
+            const tokens = (await login(loginUser.user)).tokens;
+            const user = jwt.decode(tokens.rToken) as JwtUser;
 
-    //         assert.equal(user.email, "Delano@NoToken")
-    //         assert.equal(user.role, "Patient");
-    //     });
+            assert.equal(user.email, "Delano@NoToken")
+            assert.equal(user.role, "Patient");
+        });
 
-    //     it("should return status code 403 because the email is null", async function () {
-    //         loginUser.user.email = null;
-    //         const statusCode = (await login(loginUser.user)).statusCode;
+        it("should return status code 403 because the email is null", async function () {
+            loginUser.user.email = null;
+            const statusCode = (await login(loginUser.user)).statusCode;
 
-    //         assert.equal(statusCode, 403);
-    //     });
+            assert.equal(statusCode, 403);
+        });
 
-    //     it("should return status code 403 because the email is not correct", async function () {
-    //         loginUser.user.email = "ungabunga@uchaucha";
-    //         const statusCode = (await login(loginUser.user)).statusCode;
+        it("should return status code 403 because the email is not correct", async function () {
+            loginUser.user.email = "ungabunga@uchaucha";
+            const statusCode = (await login(loginUser.user)).statusCode;
 
-    //         assert.equal(statusCode, 403);
-    //     });
+            assert.equal(statusCode, 403);
+        });
 
-    //     it("should return status code 403 because the password is incorrect", async function () {
-    //         loginUser.user.password = "NotWelcome01";
-    //         const statusCode = (await login(loginUser.user)).statusCode;
+        it("should return status code 403 because the password is incorrect", async function () {
+            loginUser.user.password = "NotWelcome01";
+            const statusCode = (await login(loginUser.user)).statusCode;
 
-    //         assert.equal(statusCode, 403);
-    //     });
-    // });
+            assert.equal(statusCode, 403);
+        });
+    });
 
-    // describe("logout", function () {
-    //     let logoutUser: Account;
+    describe("logout", function () {
+        let logoutUser: Account;
 
-    //     beforeEach(async function () {
-    //         await truncateEntireAccountsTable();
-    //         logoutUser = {user:{ email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}}
-    //         await sendRegister(logoutUser.user)
-    //         logoutUser.tokens = (await login(logoutUser.user)).tokens;
-    //         statusCode = null;
-    //     });
+        beforeEach(async function () {
+            await truncateEntireAccountsTable();
+            logoutUser = {user:{ email: "Delano@NoToken", fhir_id: "1", password: "TestCase01", role: "Patient"}}
+            await sendRegister(logoutUser.user)
+            logoutUser.tokens = (await login(logoutUser.user)).tokens;
+            statusCode = null;
+        });
 
-    //     it("should return status code 200 because the logout was successful", async function () {
-    //         statusCode = await logout(logoutUser.user, 200)
-    //         assert.equal(statusCode, 200);
-    //     });
+        it("should return status code 200 because the logout was successful", async function () {
+            statusCode = await logout(logoutUser.user, 200)
+            assert.equal(statusCode, 200);
+        });
 
-    //     it("should return status code 404 because the given email is incorrect", async function () {
-    //         logoutUser.user.email = "incorrectEmail";
-    //         statusCode = await logout(logoutUser.user, 404)
+        it("should return status code 404 because the given email is incorrect", async function () {
+            logoutUser.user.email = "incorrectEmail";
+            statusCode = await logout(logoutUser.user, 404)
 
-    //         assert.equal(statusCode, 404);
-    //     });
+            assert.equal(statusCode, 404);
+        });
 
-    // });
+    });
 });
 
