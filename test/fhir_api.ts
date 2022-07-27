@@ -191,7 +191,7 @@ describe("FHIR API", function () {
 
         describe("Resource | Observation", function () {
             it("Patient should get observation resource with correct API request", async function () {
-                const response = await getResource("30", patientAccount.tokens.token, "Observation");
+                const response = await getResource("73", patientAccount.tokens.token, "Observation");
 
                 assert.equal(response.statusCode, 200);
             });
@@ -203,8 +203,8 @@ describe("FHIR API", function () {
             });
 
             it("Patient shouldn't be able to update his own observation resource", async function () {
-                const observationResource = JSON.stringify({"resourceType": "Observation","id": "30","meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+patientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
-                const response = await updateResource("30", patientAccount.tokens.token, observationResource, "Observation");
+                const observationResource = JSON.stringify({"resourceType": "Observation","id": "73","meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+patientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
+                const response = await updateResource("73", patientAccount.tokens.token, observationResource, "Observation");
 
 
 
@@ -242,7 +242,7 @@ describe("FHIR API", function () {
 
         before(async function () {
             await truncateEntireAccountsTable();
-            patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "28", password: "TestCase01", role: "patient"}}
+            patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "71", password: "TestCase01", role: "patient"}}
             adminAccount = {user:{ email: "admin@NoToken", fhir_id: "", password: "TestCase01", role: "admin"}}
             await sendRegister(adminAccount.user)
             adminAccount.tokens = (await login(adminAccount.user)).tokens;
