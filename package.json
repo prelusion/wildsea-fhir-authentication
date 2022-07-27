@@ -9,7 +9,7 @@
     "watch": "npx tsc --watch",
     "run": "node dist/index.js",
     "ts-node:run": "ts-node src/index.ts",
-    "test": "ts-mocha test/**/*.ts",
+    "test": "ts-mocha test/**/*.ts --exit",
     "test watch": "ts-mocha test/**/*.ts -w --watch-files '**/*.ts'",
     "migrate": "db-migrate up"
   },
