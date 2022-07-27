@@ -26,7 +26,7 @@ describe("Database authentication system ", function () {
                 statusCode = code;
             })
 
-            assert.equal(statusCode, 201);
+            assert.equal(statusCode, 404);
         });
 
         it("should return status code 409 because the email is not unique", async function () {
