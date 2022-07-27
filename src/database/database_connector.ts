@@ -7,7 +7,14 @@ let pool: Pool;
  * generates pool connection to be used throughout the app
  */
 export const init = () => {
-    console.log("Host: " + process.env.DB_HOST);
+    if (process.env.DB_HOST === undefined || process.env.DB_HOST === null) {
+        process.env.DB_CONNECTION_LIMIT = "4";
+        process.env.DB_HOST = "mysql"
+        process.env.DB_USER = "admin"
+        process.env.DB_PASSWORD = "admin"
+        process.env.DB_DATABASE = "fhir-authentication-test"
+        process.env.DB_PORT = "3306"
+    }
     console.log("Host: " + process.env.DB_HOST);
     try {
         pool = createPool({
