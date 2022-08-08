@@ -14,11 +14,11 @@ function getSignOptions(): SignOptions {
 }
 
 export function generateAccessToken(user: User) {
-    return jwt.sign(user, privateKEY);
+    return jwt.sign(user, privateKEY, getSignOptions());
 }
 
 export function generateRefreshToken(user: User) {
-    return jwt.sign(user, privateRKEY);
+    return jwt.sign(user, privateRKEY, getSignOptions());
 }
 
 // Middleware function for api requests

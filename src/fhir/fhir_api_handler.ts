@@ -5,7 +5,7 @@ let instance;
 
 export function initInstance() {
     instance = axios.create({
-        baseURL: 'http://localhost/fhir/',
+        baseURL: 'http://fhir.wildezee.com/fhir/',
         timeout: 2000,
         responseType: 'json'
     });
