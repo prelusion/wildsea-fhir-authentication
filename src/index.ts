@@ -1,4 +1,4 @@
-import dotenv from  'dotenv'
+import dotenv from 'dotenv'
 dotenv.config();
 import * as server from "./server";
 import {generateAccessToken} from "./token_handler";
