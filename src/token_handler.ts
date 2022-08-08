@@ -14,15 +14,11 @@ function getSignOptions(): SignOptions {
 }
 
 export function generateAccessToken(user: User) {
-    // Todo sign options
     return jwt.sign(user, privateKEY, getSignOptions());
-    // return jwt.sign(user, privateKEY);
 }
 
 export function generateRefreshToken(user: User) {
-    // Todo sign options
     return jwt.sign(user, privateRKEY, getSignOptions());
-    // return jwt.sign(user, privateRKEY);
 }
 
 // Middleware function for api requests

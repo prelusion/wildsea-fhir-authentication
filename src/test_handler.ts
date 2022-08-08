@@ -1,6 +1,6 @@
 import {LoginResponse, User} from "./interface/interfaces";
 import supertest from "supertest";
-import dotenv from  'dotenv'
+import dotenv from 'dotenv'
 import path from "path";
 
 // Dotenv must be loaded before app, this way the .env.test will be read before the ..env file when running tests.
