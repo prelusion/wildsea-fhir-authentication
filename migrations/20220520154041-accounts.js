@@ -14,6 +14,10 @@ exports.setup = function(options, seedLink) {
   // seed = seedLink;
 };
 
+/**
+  * Migrates the tables into the MySQL DB.
+  * @param db
+  */
 exports.up = function(db) {
   return db.createTable('accounts', {
     columns: {
@@ -28,6 +32,10 @@ exports.up = function(db) {
   });
 };
 
+/**
+  * Migrates the tables from the MySQL DB.
+  * @param db
+  */
 exports.down = function(db) {
   return db.dropTable('accounts');
 };

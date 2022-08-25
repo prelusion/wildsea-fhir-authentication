@@ -1,3 +1,6 @@
+/**
+ * Query templates used for creating queries in a save and dynamically manner.
+ */
 export const AccountQueries = {
     registerAccount: `
         INSERT INTO accounts (fhir_id, email, password, role, rToken, token)

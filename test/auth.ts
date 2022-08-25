@@ -5,6 +5,18 @@ import {truncateEntireAccountsTable} from "../src/database/account_service";
 import {login, logout, refreshToken, sendRegister, verifyToken} from "../src/test_handler";
 import {generateAccessToken, generateRefreshToken} from "../src/token_handler";
 
+/**
+ * The tests in this file tests the JWToken on it's generation, verification and integrity
+ * The token is tested on a made but valid user.
+ *
+ * The following tests exists:
+ *   Generating access token should return given value
+ *   Generated access token should be verified correctly
+ *   Generated access token that has been manipulated should return 403
+ *   Generating refresh token should return given value
+ *   Should return status code 403 because of a wrong email
+ *   Should return status code 403 because the rToken has been manipulated
+ */
 describe("Token", function () {
 
     describe("Generation", function () {

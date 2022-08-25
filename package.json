@@ -4,7 +4,7 @@
   "description": "Authentication system for the Wild Sea FHIR server",
   "main": "index.ts",
   "scripts": {
-    "devStart": "npx nodemon src/index.ts",
+    "serve": "npx nodemon src/index.ts",
     "start": "tsc && node dist/index.js",
     "watch": "npx tsc --watch",
     "run": "node dist/index.js",

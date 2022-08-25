@@ -4,6 +4,24 @@ import jwt from 'jsonwebtoken'
 import {truncateEntireAccountsTable} from "../src/database/account_service";
 import {login, logout, sendRegister} from "../src/test_handler";
 
+/**
+ * The tests in this file tests the database usability
+ * The DB is tested on Registering, Valid or unvalid authentication, and returning proper HTTP status codes.
+ * 
+ * The following tests exists:
+ *   should return status code 201 for creating the Patient
+ *   should return status code 409 because the email is not unique
+ *   should return status code 409 because the fhir_id is not unique
+ *   should return status code 403 because the email is empty
+ *   should return status code 404 if new user is a Patient with no fhir_id
+ *   Should return correct token after correct login
+ *   Should return correct RefreshToken after correct login
+ *   should return status code 403 because the email is null
+ *   should return status code 403 because the email is not correct
+ *   should return status code 403 because the password is incorrect
+ *   should return status code 200 because the logout was successful
+ *   should return status code 404 because the given email is incorrect
+ */
 describe("Database authentication system ", function () {
     let statusCode: number;
 

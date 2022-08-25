@@ -8,6 +8,12 @@ dotenv.config({path: path.join(__dirname, "../.env.test")});
 import {app} from "./server"
 const request = supertest(app);
 
+/** 
+* Register API function, this sends a HTTP POST request to register a User into the database
+* @param {User} user
+* @param {number} expectedStatusCode
+* @return {number}
+*/
 export async function sendRegister(user: User, expectedStatusCode = 201): Promise<number> {
     let statusCode: number;
     await request.post("/register")
@@ -25,6 +31,11 @@ export async function sendRegister(user: User, expectedStatusCode = 201): Promis
     return statusCode;
 }
 
+/** 
+* Login API function, this sends a HTTP POST request to login a User
+* @param {User} user
+* @return {LoginResponse}
+*/
 export async function login(user: User): Promise<LoginResponse> {
     let loginResponse: LoginResponse;
     await request.post("/login")
@@ -41,6 +52,12 @@ export async function login(user: User): Promise<LoginResponse> {
     return loginResponse;
 }
 
+/**
+* Logout API function, this sends a HTTP GET request to logout a User
+* @param {User} user
+* @param {number} expectedStatusCode
+* @return {LoginResponse}
+*/
 export async function logout(user: User, expectedStatusCode = 201): Promise<number> {
     let statusCode: number;
     await request.get("/logout")
@@ -55,6 +72,11 @@ export async function logout(user: User, expectedStatusCode = 201): Promise<numb
     return statusCode;
 }
 
+/**
+* VerifyToken API function, This sends a HTTP GET request to verifies a JWT of a user.
+* @param {string} token
+* @return {User | number}
+*/
 export async function verifyToken(token: string): Promise<User | number> {
     let statusCode = 0;
     let user: User;
@@ -77,6 +99,12 @@ export async function verifyToken(token: string): Promise<User | number> {
     return user;
 }
 
+/**
+* RefreshToken API function, This sends a HTTP GET request to refreshe the token when necessary.
+* @param {User} user
+* @param {string} refreshToken
+* @return {LoginResponse}
+*/
 export async function refreshToken(user: User, refreshToken: string): Promise<LoginResponse> {
     let loginResponse: LoginResponse;
 

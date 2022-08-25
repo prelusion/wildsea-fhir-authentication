@@ -2,9 +2,14 @@ import {User} from "./interface/interfaces";
 import jwt, {SignOptions} from 'jsonwebtoken'
 import fs from "fs";
 
+// These are secretkeys used for generating or verifying the Json Web Tokens
 const privateKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
 const privateRKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
 
+/**
+* These are sign options signing the JWT
+* @return {SignOptions}
+*/
 function getSignOptions(): SignOptions {
     return {
         issuer: "Wild Sea",
@@ -12,11 +17,18 @@ function getSignOptions(): SignOptions {
         algorithm: "RS256"
     }
 }
-
-export function generateAccessToken(user: User) {
+/** This function generates JWT on a specific user
+* @param {User} user
+* @return a signed JWT
+*/
+ export function generateAccessToken(user: User) {
     return jwt.sign(user, privateKEY, getSignOptions());
 }
 
+/** This function generates refresh JWT on a specific user
+* @param {User} user
+* @return a signed JWT
+*/
 export function generateRefreshToken(user: User) {
     return jwt.sign(user, privateRKEY, getSignOptions());
 }

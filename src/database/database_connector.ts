@@ -7,6 +7,8 @@ let pool: Pool;
  * generates pool connection to be used throughout the app
  */
 export const init = () => {
+    // If the DB_HOST is undefined or null means that the environment variables are not properly loaded.
+    // This creates a TEST DB to make it work in a test local environment anyway.
     if (process.env.DB_HOST === undefined || process.env.DB_HOST === null) {
         process.env.DB_CONNECTION_LIMIT = "4";
         process.env.DB_HOST = "mysql"
@@ -17,6 +19,7 @@ export const init = () => {
     }
     console.log("Host: " + process.env.DB_HOST);
     try {
+        // tries to create a pool of connections with DB from env variables.
         pool = createPool({
             connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT),
             host: process.env.DB_HOST,

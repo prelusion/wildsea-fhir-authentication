@@ -4,6 +4,35 @@ import {Account} from "../src/interface/interfaces";
 import {truncateEntireAccountsTable} from "../src/database/account_service";
 import {login, sendRegister} from "../src/test_handler";
 
+/**
+ * The tests in this file tests the autorisation of the FHIR server in combination with the generated JWT
+ * The tests include Patients or Admins trying to fetch and/or update their information.
+ * The tests always expect a valid response
+ * 
+ * The following tests exists:
+ *   Patient should get patient resource with correct API request
+ *   Patient shouldn't get patient resource because FHIR_ID isn't correct (Not their patient information
+ *   Patient shouldn't get patient resource because token isn't correct
+ *   Patient shouldn't get patient resource because token is expired
+ *   Patient shouldn't be able to update their own patient resource
+ *   Patient shouldn't be able to update another patients' resource
+ *   Patient shouldn't be able to create a patient resource
+ *   Patient shouldn't be able to delete a patient resource
+ *   Patient should get observation resource with correct API request
+ *   Patient shouldn't get observation resource because FHIR_ID isn't correct (Not their observation information
+ *   Patient shouldn't be able to update his own observation resource
+ *   Patient shouldn't be able to update another patients observation resource
+ *   Patient shouldn't be able to delete an observation resource
+ *   Patient shouldn't be able to create an observation resource
+ *   Admin should get patient resource with correct API request
+ *   Admin shouldn't get patient resource when token isn't correct
+ *   Admin shouldn't get patient resource when token is expired
+ *   Admin should be able to update a patient resource with correct FHIR_ID
+ *   Admin should be able to create a patient resource
+ *   Admin should be able to patch a patient resource
+ *   Admin should be able to delete a patient resource
+ *   Admin should be able to search for a bundle
+ */
 describe("FHIR API", function () {
     before(function () {
         initInstance();

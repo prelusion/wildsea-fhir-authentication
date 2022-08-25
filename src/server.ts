@@ -9,19 +9,25 @@ import * as MySQLConnector from './database/database_connector';
 import {getAccountByEmail, registerAccount, updateTokenByFHIREmail} from "./database/account_service";
 import {authenticateToken, generateAccessToken, generateRefreshToken} from "./token_handler";
 
-//Globals
+// Globals defined
+// app is the express server
 export const app = express()
+// Port for the express server
 const port = 3000
 
 const privateRKEY = fs.readFileSync('./fhir_secret_key', 'utf8');
-//Lets the application use JSON
+// Lets the application use JSON
 app.use(express.json())
 app.use(cors());
 
-//Inits the mysql pools for queries to be run.
+// Inits the mysql pools for queries to be run.
 MySQLConnector.init()
 
-
+/**
+* Register HTTP API listener
+* Registers a USER into the DB
+* @return {number}
+*/
 app.post('/register', async (req, res) => {
     console.log("register DETECTED");
 
@@ -44,7 +50,16 @@ app.post('/register', async (req, res) => {
     return res.sendStatus(statusCode);
 });
 
+
 const pubKey = fs.readFileSync('./fhir_public_key', 'utf8');
+
+/**
+* Login HTTP API listener
+* Logs a user in
+* @param req
+* @param res
+* @return {number | User object}
+*/
 app.post('/login', async (req, res) => {
     console.log("LOGIN DETECTED");
     
@@ -58,7 +73,7 @@ app.post('/login', async (req, res) => {
         return res.json({statusCode: 403, tokens: null});
     }
 
-    //Authenticate user
+    // Authenticate user
     const user = {
         email: acc.user.email,
         fhir_id: acc.user.fhir_id,
@@ -78,10 +93,24 @@ app.post('/login', async (req, res) => {
 });
 
 
+
+/**
+* Logout HTTP API listener, Logs a USER out
+* @param req
+* @param res
+* @return {number}
+*/
 app.get('/logout', async (req, res) => {
     return res.sendStatus(await updateTokenByFHIREmail(req.body.email, null, null))
 })
 
+
+/**
+* Logout HTTP API listener, Logs a USER out
+* @param req
+* @param res
+* @return {number}
+*/
 app.get('/token', async (req, res) => {
     const authHeader = req.headers['authorization']
     const rToken = authHeader && authHeader.split(' ')[1]
@@ -111,6 +140,12 @@ app.get('/token', async (req, res) => {
     });
 })
 
+/**
+* Verifytoken HTTP API listener, Verifies a token of a user.
+* @param req
+* @param res
+* @return {User}
+*/
 app.get('/verifyToken', authenticateToken, (req, res) => {
 
     console.log(req.body)
@@ -122,6 +157,10 @@ app.get('/verifyToken', authenticateToken, (req, res) => {
 })
 
 
+
+/**
+* Starts the Express server on port ${port}
+*/
 export function startExpressServer() {
     app.listen(port, () => {
         console.log(`Example app listening on port ${port}`)

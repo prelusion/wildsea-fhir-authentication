@@ -9,6 +9,7 @@ services:
     ports:
       - "3307:3307"
     environment:
+    # Using either .env.test or .env variables
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
