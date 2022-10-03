@@ -40,9 +40,9 @@ describe("FHIR API", function () {
     
     before(function () {
         initInstance();
-        patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "54", password: "TestCase01", role: "patient"}, observation: "57"}
-        anotherPatientAccount = {user:{ email: "Another@NoToken", fhir_id: "395", password: "TestCase01", role: "patient"}, observation: "656"}
-        adminAccount = {user:{ email: "admin@NoToken", fhir_id: "54", password: "TestCase01", role: "admin"}, observation: "57"}
+        patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "40", password: "TestCase01", role: "patient"}, observation: "54"}
+        anotherPatientAccount = {user:{ email: "Another@NoToken", fhir_id: "245", password: "TestCase01", role: "patient"}, observation: "322"}
+        adminAccount = {user:{ email: "admin@NoToken", fhir_id: "40", password: "TestCase01", role: "admin"}, observation: "54"}
     });
 
     describe("Role | Patient", function () {
