@@ -34,18 +34,21 @@ import {login, sendRegister} from "../src/test_handler";
  *   Admin should be able to search for a bundle
  */
 describe("FHIR API", function () {
+    let patientAccount: Account;
+    let anotherPatientAccount: Account;
+    let adminAccount: Account;
+    
     before(function () {
         initInstance();
+        patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "54", password: "TestCase01", role: "patient"}, observation: "57"}
+        anotherPatientAccount = {user:{ email: "Another@NoToken", fhir_id: "395", password: "TestCase01", role: "patient"}, observation: "656"}
+        adminAccount = {user:{ email: "admin@NoToken", fhir_id: "54", password: "TestCase01", role: "admin"}, observation: "57"}
     });
 
     describe("Role | Patient", function () {
-        let patientAccount: Account;
-        let anotherPatientAccount: Account;
 
         before(async function () {
             await truncateEntireAccountsTable();
-            patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "80", password: "TestCase01", role: "patient"}}
-            anotherPatientAccount = {user:{ email: "Another@NoToken", fhir_id: "482", password: "TestCase01", role: "patient"}}
             await sendRegister(patientAccount.user)
             patientAccount.tokens = (await login(patientAccount.user)).tokens;
         });
@@ -221,20 +224,20 @@ describe("FHIR API", function () {
 
         describe("Resource | Observation", function () {
             it("Patient should get observation resource with correct API request", async function () {
-                const response = await getResource("82", patientAccount.tokens.token, "Observation");
+                const response = await getResource(patientAccount.observation, patientAccount.tokens.token, "Observation");
 
                 assert.equal(response.statusCode, 200);
             });
 
             it("Patient shouldn't get observation resource because FHIR_ID isn't correct (Not their observation information)", async function () {
-                const response = await getResource("564", patientAccount.tokens.token, "Observation");
+                const response = await getResource(anotherPatientAccount.observation, patientAccount.tokens.token, "Observation");
 
                 assert.equal(response.statusCode, 403);
             });
 
             it("Patient shouldn't be able to update his own observation resource", async function () {
-                const observationResource = JSON.stringify({"resourceType": "Observation","id": "82","meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+patientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
-                const response = await updateResource("82", patientAccount.tokens.token, observationResource, "Observation");
+                const observationResource = JSON.stringify({"resourceType": "Observation","id": patientAccount.observation,"meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+patientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
+                const response = await updateResource(patientAccount.observation, patientAccount.tokens.token, observationResource, "Observation");
 
 
 
@@ -242,15 +245,15 @@ describe("FHIR API", function () {
             });
 
             it("Patient shouldn't be able to update another patients observation resource", async function () {
-                const observationResource = JSON.stringify({"resourceType": "Observation","id": "564","meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+anotherPatientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
-                const response = await updateResource("564", patientAccount.tokens.token, observationResource, "Observation");
+                const observationResource = JSON.stringify({"resourceType": "Observation","id": anotherPatientAccount.observation,"meta": {"versionId": "1","lastUpdated": "2022-07-13T11:38:58.178+00:00","source": "#yAqgILoHlK3Gb83D"},"status": "final","category": [ {"coding": [ {"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "vital-signs","display": "vital-signs"} ]} ],"code": {"coding": [ {"system": "http://loinc.org","code": "8302-2","display": "Body Height"} ],"text": "Body Height"},"subject": {"reference": "Patient/"+anotherPatientAccount.user.fhir_id},"encounter": {"reference": "Encounter/29"},"effectiveDateTime": "2017-10-15T03:13:36+00:00","issued": "2017-10-15T03:13:36.633+00:00","valueQuantity": {"value": 49.7,"unit": "cm","system": "http://unitsofmeasure.org","code": "cm"}});
+                const response = await updateResource(anotherPatientAccount.observation, patientAccount.tokens.token, observationResource, "Observation");
 
 
                 assert.equal(response.statusCode, 403);
             });
 
             it("Patient shouldn't be able to delete an observation resource", async function () {
-                const response = await deleteResource("82", patientAccount.tokens.token, "Observation");
+                const response = await deleteResource(patientAccount.observation, patientAccount.tokens.token, "Observation");
 
 
                 assert.equal(response.statusCode, 403);
@@ -267,13 +270,8 @@ describe("FHIR API", function () {
     });
 
     describe("Role | Admin", function () {
-        let patientAccount: Account;
-        let adminAccount: Account;
-
         before(async function () {
             await truncateEntireAccountsTable();
-            patientAccount = {user:{ email: "Delano@NoToken", fhir_id: "80", password: "TestCase01", role: "patient"}}
-            adminAccount = {user:{ email: "admin@NoToken", fhir_id: "", password: "TestCase01", role: "admin"}}
             await sendRegister(adminAccount.user)
             adminAccount.tokens = (await login(adminAccount.user)).tokens;
         });

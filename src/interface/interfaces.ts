@@ -18,6 +18,7 @@ export interface Tokens {
 export interface Account {
     user: User;
     tokens?: Tokens;
+    observation?: string;
 }
 
 export interface LoginResponse {
