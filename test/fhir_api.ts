@@ -56,7 +56,6 @@ describe("FHIR API", function () {
         describe("Resource | Patient", function () {
             it("Patient should get patient resource with correct API request", async function () {
                const response = await getResource(patientAccount.user.fhir_id, patientAccount.tokens.token);
-               console.log(response)
 
                 assert.equal(response.statusCode, 200);
                 // assert.equal(response.resource.id, patientAccount.user.fhir_id)

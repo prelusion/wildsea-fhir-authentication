@@ -148,8 +148,6 @@ app.get('/token', async (req, res) => {
 */
 app.get('/verifyToken', authenticateToken, (req, res) => {
 
-    console.log(req.body)
-
     if (req.body.user === null || req.body.user === undefined) {
         return res.sendStatus(res.statusCode);
     }

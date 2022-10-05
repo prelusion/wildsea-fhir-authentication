@@ -78,7 +78,6 @@ export const getAccountByEmail = async (email: string): Promise<Account | null> 
  * @return {Account}
  */
 export const updateTokenByFHIREmail = async(email: string, token: string, rToken): Promise<number> => {
-    console.log("token", rToken);
 
     const accounts = await execute<{ affectedRows: number }>(AccountQueries.updateTokenByFHIREmail, [
         token,
@@ -112,4 +111,6 @@ export const truncateEntireAccountsTable = async () => {
  * Logs a error of the DB when it occurs, the date & error are logged.
  * @param {string}
  */
-function logError(error: string) { console.log('\n\x1b[36m%s\x1b[0m', "    DB Error logged at: " + Date.now() + "\n       " + error )}
+function logError(error: string) { 
+    // console.log('\n\x1b[36m%s\x1b[0m', "    DB Error logged at: " + Date.now() + "\n       " + error )
+}
